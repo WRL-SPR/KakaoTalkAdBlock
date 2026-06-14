@@ -5,21 +5,21 @@ package main
 import (
 	"context"
 	"flag"
-	"kakaotalkadblock/internal"
-	"kakaotalkadblock/internal/win"
-	"kakaotalkadblock/winres"
 	"os/exec"
 	"time"
 
+	"github.com/WRL-SPR/KakaoGuard/internal"
+	"github.com/WRL-SPR/KakaoGuard/internal/win"
+	"github.com/WRL-SPR/KakaoGuard/winres"
 	"github.com/energye/systray"
 
-	_ "kakaotalkadblock/winres"
+	_ "github.com/WRL-SPR/KakaoGuard/winres"
 )
 
 const (
-	VERSION        = "2.2.3+guard1"
+	VERSION        = "1.0.0"
 	appDisplayName = "Kakao Guard"
-	repositoryURL  = "https://github.com/blurfx/KakaoTalkAdBlock"
+	repositoryURL  = "https://github.com/WRL-SPR/KakaoGuard"
 )
 
 func main() {
@@ -30,7 +30,7 @@ func main() {
 		win.ShowError(appDisplayName, "Could not migrate startup settings:\n"+err.Error())
 	}
 
-	releaseInstance, acquired, err := win.AcquireSingleInstance("KakaoTalkAdBlock")
+	releaseInstance, acquired, err := win.AcquireSingleInstance("KakaoGuard")
 	if err != nil {
 		win.ShowError(appDisplayName, "Could not initialize the application:\n"+err.Error())
 		return

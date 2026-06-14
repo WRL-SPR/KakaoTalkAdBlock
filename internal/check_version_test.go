@@ -9,11 +9,11 @@ func TestHasNewRelease(t *testing.T) {
 		latest  string
 		want    bool
 	}{
-		{name: "new patch", current: "2.2.3", latest: "2.2.4", want: true},
-		{name: "same version", current: "2.2.3", latest: "2.2.3", want: false},
-		{name: "older release", current: "2.3.0", latest: "2.2.9", want: false},
-		{name: "v prefix", current: "2.2.3", latest: "v2.3.0", want: true},
-		{name: "build metadata", current: "2.2.3+ux1", latest: "2.2.3", want: false},
+		{name: "new patch", current: "1.0.0", latest: "1.0.1", want: true},
+		{name: "same version", current: "1.0.0", latest: "1.0.0", want: false},
+		{name: "older release", current: "1.1.0", latest: "1.0.9", want: false},
+		{name: "v prefix", current: "1.0.0", latest: "v1.1.0", want: true},
+		{name: "build metadata", current: "1.0.0+private", latest: "1.0.0", want: false},
 	}
 
 	for _, tt := range tests {

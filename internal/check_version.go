@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-const latestReleaseURL = "https://api.github.com/repos/blurfx/KakaoTalkAdBlock/releases/latest"
+const latestReleaseURL = "https://api.github.com/repos/WRL-SPR/KakaoGuard/releases/latest"
 
 var versionHTTPClient = &http.Client{Timeout: 5 * time.Second}
 

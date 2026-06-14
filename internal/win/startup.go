@@ -15,7 +15,8 @@ import (
 const (
 	startupKey         = `SOFTWARE\Microsoft\Windows\CurrentVersion\Run`
 	startupApprovedKey = `SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run`
-	appSettingsKey     = `SOFTWARE\KakaoTalkAdBlock`
+	appSettingsKey     = `SOFTWARE\KakaoGuard`
+	legacySettingsKey  = `SOFTWARE\KakaoTalkAdBlock`
 	appName            = "KakaoGuard"
 	legacyAppName      = "KakaoTalkAdBlock"
 	kakaoStartupName   = "KakaoTalk"
@@ -109,6 +110,10 @@ func SetStartupEnabled(enable bool) error {
 // MigrateLegacyStartupRegistration renames the visible startup entry while
 // preserving the current executable path and managed KakaoTalk command.
 func MigrateLegacyStartupRegistration() error {
+	if err := migrateLegacySettings(); err != nil {
+		return err
+	}
+
 	k, _, err := registry.CreateKey(
 		registry.CURRENT_USER,
 		startupKey,
@@ -152,6 +157,44 @@ func MigrateLegacyStartupRegistration() error {
 		defer approved.Close()
 		_ = approved.DeleteValue(appName)
 		_ = approved.DeleteValue(legacyAppName)
+	}
+	return nil
+}
+
+func migrateLegacySettings() error {
+	legacy, err := registry.OpenKey(
+		registry.CURRENT_USER,
+		legacySettingsKey,
+		registry.QUERY_VALUE,
+	)
+	if errors.Is(err, registry.ErrNotExist) {
+		return nil
+	}
+	if err != nil {
+		return fmt.Errorf("open legacy application settings: %w", err)
+	}
+	defer legacy.Close()
+
+	command, _, err := legacy.GetStringValue(kakaoCommandValue)
+	if errors.Is(err, registry.ErrNotExist) {
+		return nil
+	}
+	if err != nil {
+		return fmt.Errorf("read legacy KakaoTalk startup backup: %w", err)
+	}
+
+	settings, _, err := registry.CreateKey(
+		registry.CURRENT_USER,
+		appSettingsKey,
+		registry.SET_VALUE,
+	)
+	if err != nil {
+		return fmt.Errorf("open application settings: %w", err)
+	}
+	defer settings.Close()
+
+	if err := settings.SetStringValue(kakaoCommandValue, command); err != nil {
+		return fmt.Errorf("migrate KakaoTalk startup backup: %w", err)
 	}
 	return nil
 }

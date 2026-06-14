@@ -5,7 +5,7 @@ import (
 
 	"golang.org/x/sys/windows"
 
-	"kakaotalkadblock/internal/win/winapi"
+	"github.com/WRL-SPR/KakaoGuard/internal/win/winapi"
 )
 
 const (

@@ -1,4 +1,4 @@
-module kakaotalkadblock
+module github.com/WRL-SPR/KakaoGuard
 
 go 1.21.0
 

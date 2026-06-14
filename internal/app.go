@@ -3,13 +3,13 @@ package internal
 import (
 	"bytes"
 	"context"
-	"kakaotalkadblock/internal/win/winapi"
 	"strings"
 	"sync"
 	"syscall"
 	"time"
 	"unsafe"
 
+	"github.com/WRL-SPR/KakaoGuard/internal/win/winapi"
 	"golang.org/x/sys/windows"
 )
 
