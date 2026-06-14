@@ -1,0 +1,61 @@
+{
+  "RT_GROUP_ICON": {
+    "APP": {
+      "0000": [
+        "icon.png",
+        "icon16.png"
+      ]
+    }
+  },
+  "RT_MANIFEST": {
+    "#1": {
+      "0409": {
+        "identity": {
+          "name": "KakaoGuard",
+          "version": "2.2.3.4"
+        },
+        "description": "KakaoTalk advertisement guard",
+        "minimum-os": "win7",
+        "execution-level": "as invoker",
+        "ui-access": false,
+        "auto-elevate": false,
+        "dpi-awareness": "system",
+        "disable-theming": false,
+        "disable-window-filtering": false,
+        "high-resolution-scrolling-aware": false,
+        "ultra-high-resolution-scrolling-aware": false,
+        "long-path-aware": true,
+        "printer-driver-isolation": false,
+        "gdi-scaling": false,
+        "segment-heap": false,
+        "use-common-controls-v6": true
+      }
+    }
+  },
+  "RT_VERSION": {
+    "#1": {
+      "0000": {
+        "fixed": {
+          "file_version": "2.2.3.4",
+          "product_version": "2.2.3.4"
+        },
+        "info": {
+          "0409": {
+            "Comments": "Open-source KakaoTalk advertisement window blocker",
+            "CompanyName": "Kakao Guard Community Fork",
+            "FileDescription": "Kakao Guard - KakaoTalk advertisement guard",
+            "FileVersion": "2.2.3.4",
+            "InternalName": "KakaoGuard",
+            "LegalCopyright": "Based on blurfx/KakaoTalkAdBlock",
+            "LegalTrademarks": "",
+            "OriginalFilename": "KakaoGuard.exe",
+            "PrivateBuild": "guard1",
+            "ProductName": "Kakao Guard",
+            "ProductVersion": "2.2.3+guard1",
+            "SpecialBuild": ""
+          }
+        }
+      }
+    }
+  }
+}

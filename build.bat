@@ -1,16 +1,12 @@
 @echo off
 
-pushd winres
-
-go-winres simply --icon icon.ico --arch amd64,386,arm64
-
-popd
+go-winres make --arch amd64,386,arm64
 
 set GOARCH=amd64
-go build -o KakaoTalkAdBlock_amd64.exe -ldflags "-H windowsgui -s -w" .\cmd\main.go
+go build -trimpath -o KakaoGuard.exe -ldflags "-H windowsgui" .\cmd\main.go
 
 set GOARCH=386
-go build -o KakaoTalkAdBlock_i386.exe -ldflags "-H windowsgui -s -w" .\cmd\main.go
+go build -trimpath -o KakaoGuard_i386.exe -ldflags "-H windowsgui" .\cmd\main.go
 
 set GOARCH=arm64
-go build -o KakaoTalkAdBlock_arm64.exe -ldflags "-H windowsgui -s -w" .\cmd\main.go
+go build -trimpath -o KakaoGuard_arm64.exe -ldflags "-H windowsgui" .\cmd\main.go

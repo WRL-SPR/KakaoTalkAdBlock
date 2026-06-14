@@ -37,7 +37,12 @@ func watch(ctx context.Context) {
 	)
 	pe32.DwSize = uint32(unsafe.Sizeof(pe32))
 	lastFoundAt := time.Now().Unix() - 2
-	var snapshot windows.HWND
+	var snapshot windows.Handle
+	defer func() {
+		if snapshot != 0 && snapshot != windows.InvalidHandle {
+			_ = winapi.CloseHandle(snapshot)
+		}
+	}()
 	var enumWindow = syscall.NewCallback(func(handle windows.HWND, processId uintptr) uintptr {
 		winapi.GetWindowThreadProcessId(handle, &pe32.Th32ProcessID)
 		if processId == uintptr(pe32.Th32ProcessID) {
@@ -75,10 +80,13 @@ func watch(ctx context.Context) {
 		case <-ticker.C:
 			mutex.Lock()
 			if lastFoundAt < time.Now().Unix()-1 {
+				if snapshot != 0 && snapshot != windows.InvalidHandle {
+					_ = winapi.CloseHandle(snapshot)
+				}
 				snapshot = winapi.CreateToolhelp32Snapshot(winapi.Th32csSnapprocess, 0)
 				lastFoundAt = time.Now().Unix()
 			}
-			if winapi.Process32First(uintptr(snapshot), &pe32) {
+			if snapshot != windows.InvalidHandle && winapi.Process32First(uintptr(snapshot), &pe32) {
 				for {
 					szExeFile = uint8ToStr(pe32.SzExeFile[:])
 

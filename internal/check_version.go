@@ -2,42 +2,44 @@ package internal
 
 import (
 	"encoding/json"
-	"io"
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 )
 
+const latestReleaseURL = "https://api.github.com/repos/blurfx/KakaoTalkAdBlock/releases/latest"
+
+var versionHTTPClient = &http.Client{Timeout: 5 * time.Second}
+
 func CheckLatestVersion(currentVersion string) (string, bool) {
-	response, err := http.Get("https://api.github.com/repos/blurfx/KakaoTalkAdBlock/releases/latest")
+	response, err := versionHTTPClient.Get(latestReleaseURL)
 	if err != nil {
 		return currentVersion, false
 	}
 	defer response.Body.Close()
 
-	body, err := io.ReadAll(response.Body)
-	if err != nil {
+	if response.StatusCode != http.StatusOK {
 		return currentVersion, false
 	}
 
-	var data map[string]interface{}
-	err = json.Unmarshal(body, &data)
-	if err != nil {
+	var data struct {
+		TagName string `json:"tag_name"`
+	}
+	if err := json.NewDecoder(response.Body).Decode(&data); err != nil || data.TagName == "" {
 		return currentVersion, false
 	}
 
-	tagName := data["tag_name"].(string)
-
-	if hasNewRelease(currentVersion, tagName) {
-		return tagName, true
+	if hasNewRelease(currentVersion, data.TagName) {
+		return data.TagName, true
 	}
 
 	return currentVersion, false
 }
 
 func hasNewRelease(current, latest string) bool {
-	v1Parts := strings.Split(current, ".")
-	v2Parts := strings.Split(latest, ".")
+	v1Parts := versionParts(current)
+	v2Parts := versionParts(latest)
 
 	for i := 0; i < len(v1Parts) && i < len(v2Parts); i++ {
 		v1Part, err := strconv.Atoi(v1Parts[i])
@@ -51,9 +53,18 @@ func hasNewRelease(current, latest string) bool {
 
 		if v1Part > v2Part {
 			return false
-		} else if v1Part < v2Part {
+		}
+		if v1Part < v2Part {
 			return true
 		}
 	}
-	return false
+	return len(v2Parts) > len(v1Parts)
+}
+
+func versionParts(version string) []string {
+	version = strings.TrimPrefix(strings.TrimSpace(version), "v")
+	if suffix := strings.IndexAny(version, "-+"); suffix >= 0 {
+		version = version[:suffix]
+	}
+	return strings.Split(version, ".")
 }
